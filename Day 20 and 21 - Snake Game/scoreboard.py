@@ -14,13 +14,23 @@ class Scoreboard(Turtle):
         self.goto(xcor, ycor)
 
         self.score = 0
-        self.write(f"Score: {self.score}", align=ALIGNMENT, font=FONT)
+
+        with open("./Day 20 and 21 - Snake Game/data.txt") as data:
+            self.highscore = int(data.read())
+
+        self.write(f"Score: {self.score} High Score: {self.highscore}", align=ALIGNMENT, font=FONT)
 
     def update_score(self):
-        self.score += 1
         self.clear()
-        self.write(f"Score: {self.score}", align="center", font=FONT)
+        self.write(f"Score: {self.score} High Score: {self.highscore}", align="center", font=FONT)
 
-    def game_over(self):
-        self.goto(0,0)
-        self.write("GAME OVER", align=ALIGNMENT, font=FONT)
+    def reset(self):
+        if self.score > self.highscore:
+            self.highscore = self.score
+            with open("./Day 20 and 21 - Snake Game/data.txt", mode="w") as data:
+                data.write(str(self.highscore))
+        self.score = 0
+        self.update_score()
+
+    def increase_score(self):
+        self.score += 1

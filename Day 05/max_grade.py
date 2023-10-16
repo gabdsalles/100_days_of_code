@@ -15,4 +15,4 @@ for score in student_scores:
   if (score >= max_note):
     max_note = score
 
-print(max_note)
+print(f"The highest score in the class is: {max_note}")
