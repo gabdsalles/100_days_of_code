@@ -1,0 +1,2 @@
+Oi, eu sou o Gabriel.
+Testando abertura, leitura e escrita de arquivos em Python.
