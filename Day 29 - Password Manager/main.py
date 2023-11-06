@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -32,19 +33,50 @@ def save():
     email = email_username_entry.get()
     password = password_entry.get()
     string = f"{website} - {email} - {password}"
+    new_data = {
+        website: {
+            "email": email,
+            "password": password
+        }
+    }
 
     if (website == "" or password == ""):
        messagebox.showinfo(title="Oops", message="Please don't leave any fields empty!")
     else:
-        is_ok = messagebox.askokcancel(title="website", message=f"These are the details entered: \nEmail: {email} "
-                            f"\nPassword: {password} \nIs it ok to save?")
+        try:
+            with open("./Day 29 - Password Manager/data.json", "r") as data_file:
+                data = json.load(data_file)
+        except FileNotFoundError:
+            with open("./Day 29 - Password Manager/data.json", "w") as data_file:
+                json.dump(new_data, data_file, indent=4)
+        else:
+            data.update(new_data)
+            with open("./Day 29 - Password Manager/data.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
+        finally:
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
 
-        if is_ok:
-            with open("./Day 29 - Password Manager/data.txt", "a") as f:
-                f.write(string + '\n')
+def find_password():
+    
+    website = website_entry.get()
 
-        website_entry.delete(0, END)
-        password_entry.delete(0, END)
+    try:
+        with open("./Day 29 - Password Manager/data.json", "r") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+            with open("./Day 29 - Password Manager/data.json", "w") as data_file:
+                pass #só cria o arquivo
+            messagebox.showinfo(title="Arquivo não encontrado", message="Data file não encontrado.")
+    else:
+        try:
+            email = data[website]["email"]
+            password = data[website]["password"]
+        except KeyError:
+            messagebox.showinfo(title="Site não encontrado", message=f"O site {website} não tem email e senha salvos")
+        else:
+            messagebox.showinfo(title=website, message=f"Email: {email}\nPassword: {password}")
+        
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -67,11 +99,11 @@ password_label = Label(text="Password: ")
 password_label.grid(row=3, column=0)
 
 #Entries
-website_entry = Entry(width=35)
-website_entry.grid(row=1, column=1, columnspan=2)
+website_entry = Entry(width=21)
+website_entry.grid(row=1, column=1)
 website_entry.focus()
-email_username_entry = Entry(width=35)
-email_username_entry.grid(row=2, column=1, columnspan=2)
+email_username_entry = Entry(width=27)
+email_username_entry.grid(row=2, column=1)
 email_username_entry.insert(END, "gabriel@gmail.com")
 password_entry = Entry(width=21)
 password_entry.grid(row=3, column=1)
@@ -82,7 +114,8 @@ generate_password_button = Button(text="Generate Password", command=generate_pas
 generate_password_button.grid(row=3, column=2)
 add_button = Button(width=36, text="Add", command=save)
 add_button.grid(row=4, column=1, columnspan=2)
-
+search_button = Button(width=15, text="Search", command=find_password)
+search_button.grid(row=1, column=2)
 
 
 window.mainloop()

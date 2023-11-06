@@ -7,9 +7,17 @@ dict_nato = {row.letter:row.code for (index, row) in df_nato.iterrows()}
 print(dict_nato)
 
 #TODO 2. Create a list of the phonetic code words from a word that the user inputs.
-word = input().upper()
+program_is_on = True
 
-result = [dict_nato[letter] for letter in word] #dicionário na chave que possui tal letra
+while program_is_on:
+    word = input("Insira uma palavra: ").upper()
+    try:
+        result = [dict_nato[letter] for letter in word] #dicionário na chave que possui tal letra
+    except KeyError:
+        print("Desculpe, apenas letras neste alfabeto.")
+    else:
+        program_is_on = False
+
 
 print(result)
 
