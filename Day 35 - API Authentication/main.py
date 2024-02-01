@@ -14,8 +14,8 @@ parameters = {
 }
 
 def send_message():
-    account_sid = 'AC5dfcba8fab3229ae617a7f8795e90eba'
-    auth_token = os.environ.get("AUTH_TOKEN")
+    account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
+    auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
@@ -45,4 +45,6 @@ for i in range(4):
 if will_rain:
     print("Bring an umbrella.")
     send_message()
+else:
+    print("Não vai chover.")
 
